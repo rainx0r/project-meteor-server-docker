@@ -14,7 +14,7 @@ Currently all the FFXIV-related servers run under 1 container and only 1 World i
 5. Copy all files from `/Data/www/login_su` from the original repository under `login/www/`.
 6. Set the `PUBLIC_IP` environment variable to the public IP of the host.
 7. Set the `WORLD_NAME`environment variable to the name of the world you want to host.
-8. Download `docker` and `docker-compose``
+8. Download `docker` and `docker-compose`.
 9. Run `docker-compose build`.
 
 ## Running
