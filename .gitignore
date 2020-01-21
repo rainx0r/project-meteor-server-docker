@@ -1,0 +1,5 @@
+.DS_STORE
+data/
+login/www/
+game/server/
+db/sql/

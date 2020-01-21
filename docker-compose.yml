@@ -1,0 +1,52 @@
+version: "3.7"
+services:
+    ffxiv:
+        build: ./game
+        image: ffxiv:1.0
+        depends_on: 
+            - db
+        environment:
+            MYSQL_DATABASE: ffxiv_server
+            MYSQL_USER: root
+            MYSQL_HOST: db
+            PUBLIC_IP: ${PUBLIC_IP}
+        depends_on:
+            - db
+        ports:
+            - 54994:54994
+            - 1989:1989
+            - 54992:54992
+        volumes:
+            - ./game/server:/app/server
+    web:
+        image: nginx:latest
+        ports:
+            - 6694:80
+        volumes:
+            - www:/www
+            - ./login/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    db:
+        build: 
+            context: ./db
+            args:
+                - PUBLIC_IP=${PUBLIC_IP}
+                - WORLD_NAME=${WORLD_NAME}
+        restart: always
+        volumes:
+            - ./db/data:/var/lib/mysql
+            - ./db/config:/etc/mysql/conf.d
+        expose:
+            - 3306
+        environment:
+            MYSQL_DATABASE: ffxiv_server
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            timeout: 20s
+            retries: 10
+    php:
+        build: ./login
+        volumes:
+            - www:/www
+volumes:
+    www: {}
